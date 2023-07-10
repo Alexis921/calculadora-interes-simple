@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Calculadora de Intereses</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f2f2f2;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    .container {
+      max-width: 500px;
+      margin: 0 auto;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .input-row {
+      margin-bottom: 20px;
+    }
+
+    .label {
+      font-weight: bold;
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    input[type="number"] {
+      width: 100%;
+      padding: 10px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    .select-wrapper {
+      position: relative;
+      display: inline-block;
+      width: 100%;
+      margin-top: 5px;
+    }
+
+    .select-wrapper:after {
+      content: '\25BC';
+      font-size: 12px;
+      color: #777;
+      position: absolute;
+      top: 50%;
+      right: 10px;
+      transform: translateY(-50%);
+      pointer-events: none;
+    }
+
+    select {
+      width: 100%;
+      padding: 10px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    .buttons {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      margin-right: 10px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      background-color: #4CAF50;
+      color: #fff;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    table th,
+    table td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: center;
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <h1>Calculadora de Intereses</h1>
+  <div class="container">
+    <div class="input-row">
+      <label class="label">¿Qué deseas calcular?</label>
+      <div class="select-wrapper">
+        <select id="calculation-type">
+          <option value="capital">Capital</option>
+          <option value="interest-rate">Tasa de Interés</option>
+          <option value="period">Periodo</option>
+          <option value="interest">Intereses</option>
+        </select>
+      </div>
+    </div>
+    <div class="input-row">
+      <label class="label">Capital</label>
+      <input type="number" id="capital" placeholder="Ingrese el capital">
+    </div>
+    <div class="input-row">
+      <label class="label">Tasa de Interés</label>
+      <input type="number" id="interest-rate" placeholder="Ingrese la tasa de interés">
+      <div class="select-wrapper">
+        <select id="interest-rate-type">
+          <option value="daily">Diaria</option>
+          <option value="weekly">Semanal</option>
+          <option value="biweekly">Quincenal</option>
+          <option value="monthly">Mensual</option>
+          <option value="bimonthly">Bimensual</option>
+          <option value="quarterly">Trimestral</option>
+          <option value="four-month">Cuatrimestral</option>
+          <option value="semiannual">Semestral</option>
+          <option value="annual">Anual</option>
+        </select>
+      </div>
+    </div>
+    <div class="input-row">
+      <label class="label">Periodo</label>
+      <input type="number" id="period" placeholder="Ingrese el periodo">
+      <div class="select-wrapper">
+        <select id="period-type">
+          <option value="days">Días</option>
+          <option value="weeks">Semanas</option>
+          <option value="biweeks">Quincenas</option>
+          <option value="months">Meses</option>
+          <option value="bimonths">Bimestres</option>
+          <option value="quarters">Trimestres</option>
+          <option value="four-months">Cuatrimestres</option>
+          <option value="semesters">Semestres</option>
+          <option value="years">Años</option>
+        </select>
+      </div>
+    </div>
+    <div class="input-row">
+      <label class="label">Intereses</label>
+      <input type="number" id="interest" placeholder="Ingrese los intereses">
+    </div>
+    <div class="input-row">
+      <label class="label">Monto Total</label>
+      <input type="number" id="total-amount" placeholder="Ingrese el monto total">
+    </div>
+    <div class="buttons">
+      <button onclick="calculate()">Calcular Resultado</button>
+      <button onclick="clearInputs()">Limpiar Datos</button>
+      <button onclick="displayTable()">Visualizar Tabla</button>
+    </div>
+    <table id="result-table" class="hidden">
+      <thead>
+        <tr>
+          <th>Capital</th>
+          <th>Interés</th>
+          <th>Tasa de Interés</th>
+          <th>Periodo</th>
+          <th>Monto Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Los resultados de la tabla se generarán aquí dinámicamente -->
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    function calculate() {
+      const calculationType = document.getElementById('calculation-type').value;
+      const capital = parseFloat(document.getElementById('capital').value);
+      const interestRate = parseFloat(document.getElementById('interest-rate').value);
+      const interestRateType = document.getElementById('interest-rate-type').value;
+      const period = parseFloat(document.getElementById('period').value);
+      const periodType = document.getElementById('period-type').value;
+      const interest = parseFloat(document.getElementById('interest').value);
+      const totalAmount = parseFloat(document.getElementById('total-amount').value);
+
+      let result = {};
+
+      switch (calculationType) {
+        case 'capital':
+          result.capital = interest / ((interestRate / 100) * period);
+          result.totalAmount = result.capital + interest;
+          break;
+        case 'interest-rate':
+          result.interestRate = (interest / (capital * period)) * 100;
+          result.totalAmount = capital + interest;
+          break;
+        case 'period':
+          result.period = interest / (capital * (interestRate / 100));
+          result.totalAmount = capital + interest;
+          break;
+        case 'interest':
+          result.interest = capital * (interestRate / 100) * period;
+          result.totalAmount = capital + interest;
+          break;
+      }
+
+      displayResult(result);
+    }
+
+    function clearInputs() {
+      document.getElementById('calculation-type').value = 'capital';
+      document.getElementById('capital').value = '';
+      document.getElementById('interest-rate').value = '';
+      document.getElementById('interest-rate-type').value = 'daily';
+      document.getElementById('period').value = '';
+      document.getElementById('period-type').value = 'days';
+      document.getElementById('interest').value = '';
+      document.getElementById('total-amount').value = '';
+      hideTable();
+    }
+
+    function displayResult(result) {
+      const tableBody = document.querySelector('#result-table tbody');
+      tableBody.innerHTML = '';
+
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td>${result.capital || ''}</td>
+        <td>${result.interest || ''}</td>
+        <td>${result.interestRate || ''}</td>
+        <td>${result.period || ''}</td>
+        <td>${result.totalAmount || ''}</td>
+      `;
+
+      tableBody.appendChild(row);
+
+      showTable();
+    }
+
+    function displayTable() {
+      const table = document.getElementById('result-table');
+      if (table.classList.contains('hidden')) {
+        table.classList.remove('hidden');
+      } else {
+        table.classList.add('hidden');
+      }
+    }
+
+    function showTable() {
+      document.getElementById('result-table').classList.remove('hidden');
+    }
+
+    function hideTable() {
+      document.getElementById('result-table').classList.add('hidden');
+    }
+  </script>
+</body>
+</html>
